@@ -1,0 +1,52 @@
+:root {
+  --primary: #663399;
+  --primary-light: #9966CC;
+  --primary-lighter: #CC99FF;
+  --primary-dark: #4C2666;
+  
+  --bg: #F5F0FA;
+  --bg-secondary: #EBE0F5;
+  --text-primary: #2D1F4D;
+  --text-secondary: #664D99;
+  
+  --accent: #9966CC;
+  --accent-bg: #F3E5FF;
+  --accent-border: #663399;
+  
+  --border: #D9C9E8;
+  
+  --success: #66CC99;
+  --warning: #FFCC66;
+  --error: #CC6666;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+}
