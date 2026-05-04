@@ -48,3 +48,9 @@ export interface ClosedDate {
   day_of_week: number | null;
   date: string | null;
 }
+
+export interface BlockedSlot {
+  id: string;
+  date: string;
+  time: string;
+}
