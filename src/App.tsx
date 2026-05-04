@@ -21,7 +21,7 @@ const INITIAL_STATE: ReservationState = {
 };
 
 function ReservationApp() {
-  const { isReady, isLoggedIn, userId, displayName, pictureUrl, error } = useLiff();
+  const { isReady, isLoggedIn, userId, displayName, error } = useLiff();
   const [step, setStep] = useState<Step>('menu');
   const [state, setState] = useState<ReservationState>(INITIAL_STATE);
   const [isFirstVisit, setIsFirstVisit] = useState(true);
