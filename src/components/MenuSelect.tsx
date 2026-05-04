@@ -1,35 +1,43 @@
-import type { Menu } from '../types';
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
+import { useLoading } from '../contexts/LoadingContext';
+import type { Menu } from '../types/index';
 
 interface Props {
-  menus: Menu[];
   onSelect: (menu: Menu) => void;
-  isLoading?: boolean;
 }
 
-export function MenuSelect({ menus, onSelect, isLoading }: Props) {
-  if (isLoading) {
-    return <div className="loading">メニューを読み込み中...</div>;
-  }
+export function MenuSelect({ onSelect }: Props) {
+  const [menus, setMenus] = useState<Menu[]>([]);
+  const { withLoading } = useLoading();
 
-  if (!menus || menus.length === 0) {
-    return <div className="error">メニューが取得できませんでした</div>;
-  }
+  useEffect(() => {
+    withLoading(async () => {
+      const { data } = await supabase
+        .from('menus')
+        .select('*')
+        .eq('service_type', 'counselor')
+        .eq('is_active', true)
+        .order('sort_order');
+      if (data) setMenus(data as Menu[]);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="menu-select">
-      <h2>カウンセリングメニューを選択してください</h2>
-      <div className="menu-grid">
-        {menus.map((menu) => (
-          <button
-            key={menu.id}
-            className="menu-card"
-            onClick={() => onSelect(menu)}
-            disabled={!menu.is_active}
-          >
+      <h2 className="section-title">メニューを選択</h2>
+      <div className="menu-list">
+        {menus.map(menu => (
+          <button key={menu.id} className="menu-card" onClick={() => onSelect(menu)}>
             <div className="menu-name">{menu.name}</div>
-            <div className="menu-description">{menu.description}</div>
-            <div className="menu-duration">{menu.duration_minutes}分</div>
-            <div className="menu-price">¥{menu.price.toLocaleString()}</div>
+            {menu.description && (
+              <div className="menu-desc">{menu.description}</div>
+            )}
+            <div className="menu-footer">
+              <span className="menu-price">¥{menu.price.toLocaleString()}</span>
+              <span className="menu-duration">{menu.customer_duration_minutes ?? menu.duration_minutes}分</span>
+            </div>
           </button>
         ))}
       </div>
