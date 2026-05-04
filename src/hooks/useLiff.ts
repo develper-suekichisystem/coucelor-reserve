@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { initLiff, getLineProfile, liff } from '../lib/liff';
 
 interface LiffContextType {
   isReady: boolean;
@@ -9,6 +10,9 @@ interface LiffContextType {
   error: string | null;
 }
 
+const IS_DEV_MOCK =
+  import.meta.env.DEV && import.meta.env.VITE_LIFF_ID === 'mock';
+
 export function useLiff(): LiffContextType {
   const [isReady, setIsReady] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,28 +22,41 @@ export function useLiff(): LiffContextType {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const initLiff = async () => {
+    const init = async () => {
       try {
-        const liff = await import('@line/liff');
-        await liff.default.init({ liffId: import.meta.env.VITE_LIFF_ID });
-        setIsReady(true);
-
-        if (liff.default.isLoggedIn()) {
+        // 開発環境でモック
+        if (IS_DEV_MOCK) {
+          setIsReady(true);
           setIsLoggedIn(true);
-          const profile = await liff.default.getProfile();
+          setUserId('dev-mock-user-001');
+          setDisplayName('テストユーザー');
+          setPictureUrl('');
+          return;
+        }
+
+        await initLiff();
+
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        const profile = await getLineProfile();
+        if (profile) {
+          setIsLoggedIn(true);
           setUserId(profile.userId);
           setDisplayName(profile.displayName);
           setPictureUrl(profile.pictureUrl || '');
-        } else {
-          liff.default.login();
         }
+
+        setIsReady(true);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to initialize LIFF');
         setIsReady(true);
       }
     };
 
-    initLiff();
+    init();
   }, []);
 
   return {
