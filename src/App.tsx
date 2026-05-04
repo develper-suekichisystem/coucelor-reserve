@@ -104,6 +104,20 @@ function ReservationApp() {
           .eq('line_user_id', userId);
       }
 
+      // LINE通知（失敗しても予約は成功扱い）
+      fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          userName: name,
+          menuName: menu.name,
+          date,
+          time,
+          reservationId: reservation.id,
+        }),
+      }).catch(console.error);
+
       setCompletedId(reservation.id as string);
       setStep('complete');
     } catch (err) {
