@@ -1,92 +1,63 @@
-import type { Menu } from '../types';
+import type { ReservationState } from '../types/index';
 
 interface Props {
-  menu: Menu;
-  date: string;
-  time: string;
-  userName: string;
-  referrerName?: string;
+  state: ReservationState;
+  displayName: string;
+  pictureUrl: string | null;
+  isFirstVisit: boolean;
   onConfirm: () => void;
-  onCancel: () => void;
-  isLoading?: boolean;
+  onBack: () => void;
+  submitting: boolean;
 }
 
 export function Confirmation({
-  menu,
-  date,
-  time,
-  userName,
-  referrerName,
-  onConfirm,
-  onCancel,
-  isLoading,
+  state, displayName, pictureUrl, isFirstVisit, onConfirm, onBack, submitting,
 }: Props) {
-  const dateObj = new Date(date);
-  const formattedDate = dateObj.toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    weekday: 'long',
-  });
+  const endHour = state.selectedTime
+    ? parseInt(state.selectedTime.slice(0, 2)) + 1
+    : null;
 
   return (
     <div className="confirmation">
-      <h2>予約内容をご確認ください</h2>
-      
-      <div className="confirmation-details">
-        <div className="detail-item">
-          <span className="detail-label">メニュー</span>
-          <span className="detail-value">{menu.name}</span>
+      <h2 className="section-title">予約内容の確認</h2>
+      <div className="confirm-card">
+        <div className="confirm-row">
+          <span className="confirm-label">メニュー</span>
+          <span className="confirm-value">{state.selectedMenu?.name}</span>
         </div>
-        
-        <div className="detail-item">
-          <span className="detail-label">日付</span>
-          <span className="detail-value">{formattedDate}</span>
+        <div className="confirm-row">
+          <span className="confirm-label">料金</span>
+          <span className="confirm-value">¥{state.selectedMenu?.price.toLocaleString()}</span>
         </div>
-        
-        <div className="detail-item">
-          <span className="detail-label">時間</span>
-          <span className="detail-value">{time}</span>
+        <div className="confirm-row">
+          <span className="confirm-label">日時</span>
+          <span className="confirm-value">
+            {state.selectedDate?.replace(/-/g, '/')}&nbsp;
+            {state.selectedTime}〜{endHour && `${String(endHour).padStart(2, '0')}:00`}
+          </span>
         </div>
-        
-        <div className="detail-item">
-          <span className="detail-label">所要時間</span>
-          <span className="detail-value">{menu.duration_minutes}分</span>
+        <div className="confirm-row">
+          <span className="confirm-label">予約者</span>
+          <span className="confirm-value confirm-value-profile">
+            {pictureUrl && (
+              <img src={pictureUrl} alt={displayName} className="confirm-avatar" />
+            )}
+            {displayName}
+          </span>
         </div>
-        
-        <div className="detail-item">
-          <span className="detail-label">料金</span>
-          <span className="detail-value">¥{menu.price.toLocaleString()}</span>
-        </div>
-        
-        <div className="detail-item">
-          <span className="detail-label">ご予約者名</span>
-          <span className="detail-value">{userName}</span>
-        </div>
-        
-        {referrerName && (
-          <div className="detail-item">
-            <span className="detail-label">ご紹介者</span>
-            <span className="detail-value">{referrerName}</span>
+        {isFirstVisit && state.referrerName && (
+          <div className="confirm-row">
+            <span className="confirm-label">紹介者</span>
+            <span className="confirm-value">{state.referrerName}</span>
           </div>
         )}
       </div>
-
-      <div className="confirmation-actions">
-        <button
-          onClick={onCancel}
-          className="cancel-button"
-          disabled={isLoading}
-        >
-          戻る
+      <p className="confirm-note">上記内容でよろしければ予約を確定してください。</p>
+      <div className="btn-group">
+        <button className="btn-next" onClick={onConfirm} disabled={submitting}>
+          {submitting ? '処理中...' : '予約を確定する'}
         </button>
-        <button
-          onClick={onConfirm}
-          className="confirm-button"
-          disabled={isLoading}
-        >
-          {isLoading ? '予約中...' : '予約を確定する'}
-        </button>
+        <button className="btn-back" onClick={onBack} disabled={submitting}>← 戻る</button>
       </div>
     </div>
   );

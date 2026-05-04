@@ -1,49 +1,54 @@
-import { useState } from 'react';
+import type { ReservationState } from '../types/index';
 
 interface Props {
-  defaultName: string;
-  onSubmit: (data: { referrerName: string }) => void;
+  state: ReservationState;
+  isFirstVisit: boolean;
+  displayName: string;
+  pictureUrl: string | null;
+  onChange: (updates: Partial<ReservationState>) => void;
+  onNext: () => void;
+  onBack: () => void;
 }
 
-export function ReservationForm({ defaultName, onSubmit }: Props) {
-  const [referrerName, setReferrerName] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({ referrerName });
-  };
-
+export function ReservationForm({
+  state, isFirstVisit, displayName, pictureUrl, onChange, onNext, onBack,
+}: Props) {
   return (
     <div className="reservation-form">
-      <h2>カウンセリング情報をご入力ください</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name">お名前</label>
-          <input
-            id="name"
-            type="text"
-            value={defaultName}
-            disabled
-            className="form-input"
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="referrer">ご紹介者（任意）</label>
-          <input
-            id="referrer"
-            type="text"
-            value={referrerName}
-            onChange={(e) => setReferrerName(e.target.value)}
-            placeholder="ご紹介いただいた方のお名前"
-            className="form-input"
-          />
-        </div>
+      <h2 className="section-title">予約者情報</h2>
 
-        <button type="submit" className="submit-button">
-          確認へ進む
-        </button>
-      </form>
+      <div className="line-profile-card">
+        {pictureUrl ? (
+          <img src={pictureUrl} alt={displayName} className="line-avatar" />
+        ) : (
+          <div className="line-avatar-placeholder">
+            {displayName.slice(0, 1)}
+          </div>
+        )}
+        <div className="line-profile-info">
+          <p className="line-profile-label">LINEアカウント</p>
+          <p className="line-profile-name">{displayName}</p>
+        </div>
+      </div>
+
+      {isFirstVisit && (
+        <div className="form-group">
+          <label className="form-label">紹介者名（任意）</label>
+          <p className="form-note">初回ご来店の方は、紹介してくださった方のお名前をご入力ください</p>
+          <input
+            className="form-input"
+            type="text"
+            placeholder="紹介してくださった方のお名前"
+            value={state.referrerName}
+            onChange={e => onChange({ referrerName: e.target.value })}
+          />
+        </div>
+      )}
+
+      <div className="btn-group">
+        <button className="btn-next" onClick={onNext}>確認へ進む</button>
+        <button className="btn-back" onClick={onBack}>← 戻る</button>
+      </div>
     </div>
   );
 }

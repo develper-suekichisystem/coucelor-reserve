@@ -21,7 +21,7 @@ const INITIAL_STATE: ReservationState = {
 };
 
 function ReservationApp() {
-  const { isReady, isLoggedIn, userId, displayName, error } = useLiff();
+  const { isReady, isLoggedIn, userId, displayName, pictureUrl, error } = useLiff();
   const [step, setStep] = useState<Step>('menu');
   const [state, setState] = useState<ReservationState>(INITIAL_STATE);
   const [isFirstVisit, setIsFirstVisit] = useState(true);
@@ -157,23 +157,24 @@ function ReservationApp() {
         )}
         {step === 'form' && (
           <ReservationForm
-            defaultName={name}
-            onSubmit={(data) => {
-              update({ referrerName: data.referrerName });
-              setStep('confirm');
-            }}
+            state={state}
+            isFirstVisit={isFirstVisit}
+            displayName={name}
+            pictureUrl={pictureUrl}
+            onChange={update}
+            onNext={() => setStep('confirm')}
+            onBack={() => setStep('time')}
           />
         )}
-        {step === 'confirm' && state.selectedMenu && state.selectedDate && state.selectedTime && (
+        {step === 'confirm' && (
           <Confirmation
-            menu={state.selectedMenu}
-            date={state.selectedDate}
-            time={state.selectedTime}
-            userName={name}
-            referrerName={state.referrerName}
+            state={state}
+            displayName={name}
+            pictureUrl={pictureUrl}
+            isFirstVisit={isFirstVisit}
             onConfirm={handleConfirm}
-            onCancel={backFromConfirm}
-            isLoading={submitting}
+            onBack={backFromConfirm}
+            submitting={submitting}
           />
         )}
         {step === 'complete' && (

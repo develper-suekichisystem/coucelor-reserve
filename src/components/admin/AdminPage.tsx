@@ -1,67 +1,128 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import type { Reservation } from '../../types';
+import { MenuAdmin } from './MenuAdmin';
+import { ScheduleAdmin } from './ScheduleAdmin';
+import { AdminLogin, isAdminAuthenticated } from './AdminLogin';
+import type { Reservation } from '../../types/index';
 
-export function AdminPage() {
+type AdminTab = 'reservations' | 'menus' | 'schedule';
+
+function ReservationAdmin() {
+  const today = new Date().toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState(today);
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchReservations();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate]);
 
-  const fetchReservations = async () => {
-    try {
-      setIsLoading(true);
-      const { data, error } = await supabase
-        .from('reservations')
-        .select('*, user:users(*), menu:menus(*)')
-        .order('date', { ascending: false });
+  async function fetchReservations() {
+    setLoading(true);
+    const { data } = await supabase
+      .from('reservations')
+      .select('*, user:users(*), menu:menus(*)')
+      .eq('date', selectedDate)
+      .eq('status', 'confirmed')
+      .order('time');
+    if (data) setReservations(data as Reservation[]);
+    setLoading(false);
+  }
 
-      if (error) throw error;
-      setReservations(data || []);
-    } catch (error) {
-      console.error('Failed to fetch reservations:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (isLoading) {
-    return <div className="admin-page">読み込み中...</div>;
+  async function cancelReservation(id: string) {
+    if (!confirm('この予約をキャンセルしますか？')) return;
+    await supabase.from('reservations').update({ status: 'cancelled' }).eq('id', id);
+    fetchReservations();
   }
 
   return (
-    <div className="admin-page">
-      <h1>管理画面</h1>
-      <h2>予約一覧</h2>
-      
-      {reservations.length === 0 ? (
-        <p>予約がありません</p>
+    <>
+      <div className="admin-date-picker">
+        <label>日付：</label>
+        <input
+          type="date"
+          value={selectedDate}
+          onChange={e => setSelectedDate(e.target.value)}
+        />
+      </div>
+
+      {loading ? (
+        <div className="loading">読み込み中...</div>
+      ) : reservations.length === 0 ? (
+        <p className="no-data">この日の予約はありません</p>
       ) : (
-        <table className="reservation-table">
-          <thead>
-            <tr>
-              <th>日付</th>
-              <th>時間</th>
-              <th>メニュー</th>
-              <th>ご予約者</th>
-              <th>ステータス</th>
-            </tr>
-          </thead>
-          <tbody>
-            {reservations.map(res => (
-              <tr key={res.id}>
-                <td>{res.date}</td>
-                <td>{res.time}</td>
-                <td>{res.menu?.name}</td>
-                <td>{res.user?.name}</td>
-                <td>{res.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="admin-list">
+          {reservations.map(r => (
+            <div key={r.id} className="admin-card">
+              <div className="admin-time">{(r.time as string).slice(0, 5)}</div>
+              <div className="admin-info">
+                <div className="admin-name">{r.user?.name}</div>
+                <div className="admin-menu">{r.menu?.name}</div>
+                <div className="admin-contact">
+                  <span>{r.user?.phone}</span>
+                  <span>{r.user?.email}</span>
+                </div>
+                {r.referrer_name && (
+                  <div className="admin-referrer">紹介者: {r.referrer_name}</div>
+                )}
+              </div>
+              <button className="btn-cancel" onClick={() => cancelReservation(r.id)}>
+                キャンセル
+              </button>
+            </div>
+          ))}
+        </div>
       )}
+    </>
+  );
+}
+
+export function AdminPage() {
+  const [authed, setAuthed] = useState(isAdminAuthenticated());
+  const [tab, setTab] = useState<AdminTab>('reservations');
+
+  if (!authed) return <AdminLogin onLogin={() => setAuthed(true)} />;
+
+  return (
+    <div className="admin-page">
+      <header className="app-header">
+        <h1 className="app-title">カウンセリング予約</h1>
+        <p className="app-subtitle">管理画面</p>
+      </header>
+
+      <div className="admin-tabs">
+        <button
+          className={`admin-tab${tab === 'reservations' ? ' active' : ''}`}
+          onClick={() => setTab('reservations')}
+        >
+          予約一覧
+        </button>
+        <button
+          className={`admin-tab${tab === 'menus' ? ' active' : ''}`}
+          onClick={() => setTab('menus')}
+        >
+          メニュー管理
+        </button>
+        <button
+          className={`admin-tab${tab === 'schedule' ? ' active' : ''}`}
+          onClick={() => setTab('schedule')}
+        >
+          休日設定
+        </button>
+        <button
+          className="admin-tab admin-tab-logout"
+          onClick={() => { sessionStorage.clear(); setAuthed(false); }}
+        >
+          ログアウト
+        </button>
+      </div>
+
+      <div className="admin-content">
+        {tab === 'reservations' && <ReservationAdmin />}
+        {tab === 'menus' && <MenuAdmin />}
+        {tab === 'schedule' && <ScheduleAdmin />}
+      </div>
     </div>
   );
 }
