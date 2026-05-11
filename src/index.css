@@ -251,8 +251,6 @@ body {
 .calendar-day:hover:not(.disabled) { background: var(--primary); color: var(--white); }
 .calendar-day.disabled { color: var(--gray-200); cursor: not-allowed; background: none; }
 .calendar-day.sunday:not(.disabled) { color: #ef4444; }
-.calendar-day.closed:not(.disabled) { background: #fef2f2; color: var(--error); }
-.calendar-day.disabled.closed { color: var(--gray-300); }
 
 /* ============================================================
    時間選択
@@ -535,49 +533,165 @@ textarea.form-input { resize: vertical; font-family: inherit; }
 .admin-tab-logout:hover { color: var(--error) !important; }
 
 /* ============================================================
-   休日設定
+   受付設定
    ============================================================ */
-.schedule-admin { padding: 16px; display: flex; flex-direction: column; gap: 24px; }
-.schedule-section {
-  border: 1px solid var(--gray-200); border-radius: 12px; padding: 16px;
-}
-.schedule-heading {
-  font-size: 15px; font-weight: 700; color: var(--gray-800); margin-bottom: 4px;
-}
+.schedule-admin { padding: 16px; display: flex; flex-direction: column; gap: 20px; }
+.schedule-heading { font-size: 15px; font-weight: 700; color: var(--gray-800); margin-bottom: 4px; }
 .schedule-desc { font-size: 12px; color: var(--gray-400); margin-bottom: 12px; }
+.schedule-empty { font-size: 13px; color: var(--gray-400); text-align: center; padding: 24px 0; }
 
-.dow-grid { display: flex; gap: 8px; flex-wrap: wrap; }
-.dow-btn {
-  width: 40px; height: 40px; border-radius: 50%;
+/* 一覧モード */
+.schedule-header-row { display: flex; justify-content: flex-end; }
+.btn-primary {
+  background: var(--primary); color: var(--white); border: none;
+  border-radius: 10px; padding: 12px 20px; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: inherit; width: 100%;
+}
+.btn-primary:hover { background: var(--primary-dark); }
+
+.schedule-month-group { display: flex; flex-direction: column; gap: 8px; }
+.schedule-month-heading {
+  font-size: 14px; font-weight: 700; color: var(--primary);
+  border-bottom: 1px solid var(--gray-100); padding-bottom: 4px;
+}
+.schedule-day-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 6px 0;
+}
+.schedule-day-label {
+  font-size: 13px; font-weight: 600; color: var(--gray-700);
+  white-space: nowrap; min-width: 110px; padding-top: 4px;
+}
+.schedule-time-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.schedule-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #f3eaf9; color: var(--primary); border-radius: 20px;
+  padding: 3px 10px 3px 12px; font-size: 12px; font-weight: 600;
+}
+.chip-remove {
+  background: none; border: none; cursor: pointer;
+  color: var(--primary); font-size: 13px; line-height: 1;
+  padding: 0; font-family: inherit;
+}
+.chip-remove:hover { color: var(--error); }
+
+/* 設定モード — インラインカレンダー */
+.inline-calendar { margin-bottom: 16px; }
+.calendar-day.selected {
+  background: var(--primary); color: var(--white); border-color: var(--primary);
+}
+
+/* 設定モード — 時間トグル */
+.edit-date-label {
+  font-size: 14px; font-weight: 700; color: var(--gray-800);
+  margin-bottom: 10px;
+}
+.time-toggle-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 20px; }
+.time-toggle-btn {
   border: 2px solid var(--gray-200); background: var(--white);
-  font-size: 14px; font-weight: 600; color: var(--gray-600);
-  cursor: pointer; transition: all 0.15s; font-family: inherit;
+  border-radius: 10px; padding: 10px 0; font-size: 13px; font-weight: 600;
+  color: var(--gray-500); cursor: pointer; font-family: inherit; transition: all 0.15s;
 }
-.dow-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
-.dow-btn.closed {
-  border-color: var(--error); background: #fef2f2; color: var(--error);
+.time-toggle-btn.on {
+  border-color: var(--primary); background: #f3eaf9; color: var(--primary);
 }
-.dow-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.time-toggle-btn:hover:not(.on) { border-color: var(--gray-400); color: var(--gray-700); }
 
-.schedule-add-row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
-.schedule-date-input, .schedule-time-select {
-  border: 1px solid var(--gray-200); border-radius: 8px;
-  padding: 8px 10px; font-size: 13px; color: var(--gray-800);
-  outline: none; font-family: inherit;
+.btn-save {
+  background: var(--primary); color: var(--white); border: none;
+  border-radius: 10px; padding: 14px; font-size: 15px; font-weight: 700;
+  cursor: pointer; font-family: inherit; width: 100%;
 }
-.schedule-date-input:focus, .schedule-time-select:focus {
-  border-color: var(--primary);
-}
+.btn-save:hover { background: var(--primary-dark); }
+.btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.schedule-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.schedule-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 12px; background: var(--gray-50); border-radius: 8px;
-  font-size: 13px; color: var(--gray-700);
-}
+/* 共通 */
 .btn-remove {
   font-size: 12px; border-radius: 6px; padding: 3px 10px;
   border: 1px solid var(--error); background: none;
   color: var(--error); cursor: pointer; font-family: inherit; white-space: nowrap;
 }
 .btn-remove:hover { background: #fef2f2; }
+.btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
+.calendar-dow.saturday { color: #3b82f6; }
+
+/* ============================================================
+   場所選択（LocationPicker）
+   ============================================================ */
+.location-picker { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.location-hint { font-size: 13px; color: var(--gray-400); }
+
+.location-list { display: flex; flex-direction: column; gap: 10px; }
+.location-card {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 16px; border-radius: 12px;
+  border: 2px solid var(--gray-200); background: var(--white);
+  text-align: left; cursor: pointer; font-family: inherit;
+  transition: all 0.15s;
+}
+.location-card:hover:not(.selected) {
+  border-color: var(--primary-light);
+}
+.location-card.selected {
+  border-color: var(--primary); background: #f3eaf9;
+}
+.location-name {
+  font-size: 15px; font-weight: 700; color: var(--gray-800);
+}
+.location-card.selected .location-name { color: var(--primary); }
+.location-address {
+  font-size: 12px; color: var(--gray-400);
+}
+.location-card-other .location-name { color: var(--gray-600); }
+.location-card-other.selected .location-name { color: var(--primary); }
+
+.location-note-input {
+  border: 1px solid var(--gray-200); border-radius: 10px;
+  padding: 12px; font-size: 14px; color: var(--gray-800);
+  font-family: inherit; outline: none; resize: vertical;
+  width: 100%;
+}
+.location-note-input:focus { border-color: var(--primary); }
+
+/* ============================================================
+   場所管理（LocationAdmin）
+   ============================================================ */
+.location-admin { padding: 16px; display: flex; flex-direction: column; gap: 24px; }
+.location-add-form { display: flex; flex-direction: column; gap: 8px; }
+.location-add-form .form-input { width: 100%; }
+.location-add-form .btn-add { align-self: flex-end; }
+
+.location-list-admin { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.location-admin-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; background: var(--gray-50); border-radius: 10px;
+  gap: 10px;
+}
+.location-admin-item.inactive { opacity: 0.5; }
+.location-admin-info {
+  display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;
+}
+.location-admin-name { font-size: 14px; font-weight: 700; color: var(--gray-800); }
+.location-admin-address { font-size: 12px; color: var(--gray-400); }
+.location-admin-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.btn-toggle {
+  font-size: 12px; border-radius: 6px; padding: 3px 10px;
+  border: 1px solid var(--gray-300); background: none;
+  color: var(--gray-500); cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+.btn-toggle.active {
+  border-color: var(--primary); color: var(--primary);
+}
+.btn-toggle:hover { background: var(--gray-100); }
+
+/* ============================================================
+   確認画面 — 場所行
+   ============================================================ */
+.confirm-row-location .confirm-value {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.confirm-location-name { font-weight: 600; }
+.confirm-location-address { font-size: 12px; color: var(--gray-400); }
+
+/* 予約一覧 — 場所表示 */
+.admin-location { font-size: 12px; color: var(--gray-400); }

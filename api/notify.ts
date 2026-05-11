@@ -9,6 +9,8 @@ interface NotifyPayload {
   date: string;   // YYYY-MM-DD
   time: string;   // HH:MM
   reservationId: string;
+  locationName?: string;
+  locationAddress?: string;
 }
 
 async function pushMessage(to: string, text: string): Promise<void> {
@@ -31,7 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { userId, userName, menuName, date, time, reservationId } =
+  const { userId, userName, menuName, date, time, reservationId, locationName, locationAddress } =
     req.body as NotifyPayload;
 
   const formattedDate = date.replace(/-/g, '/');
@@ -48,8 +50,11 @@ ${userName} 様
 ━━━━━━━━━━━━━━
 メニュー：${menuName}
 日　　時：${formattedDate} ${time}〜${endTime}
+場　　所：${locationName ?? '未定'}${locationAddress ? `\n住　　所：${locationAddress}` : ''}
 予約番号：${shortId}
 ━━━━━━━━━━━━━━
+
+場所・住所などの詳細は、施術者よりLINEにてお知らせいたします。
 
 キャンセルの場合はLINEよりご連絡ください。
 
@@ -60,6 +65,7 @@ ${userName} 様
 お客様：${userName}
 メニュー：${menuName}
 日　　時：${formattedDate} ${time}〜${endTime}
+場　　所：${locationName ?? '未定'}${locationAddress ? `\n住　　所：${locationAddress}` : ''}
 予約番号：${shortId}`;
 
   try {

@@ -5,18 +5,21 @@ import { StepIndicator } from './components/StepIndicator';
 import { MenuSelect } from './components/MenuSelect';
 import { CalendarPicker } from './components/CalendarPicker';
 import { TimePicker } from './components/TimePicker';
+import { LocationPicker } from './components/LocationPicker';
 import { ReservationForm } from './components/ReservationForm';
 import { Confirmation } from './components/Confirmation';
 import { Complete } from './components/Complete';
 import { AdminPage } from './components/admin/AdminPage';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { supabase } from './lib/supabase';
-import type { Step, ReservationState, Menu } from './types/index';
+import type { Step, ReservationState, Menu, Location } from './types/index';
 
 const INITIAL_STATE: ReservationState = {
   selectedMenu: null,
   selectedDate: null,
   selectedTime: null,
+  selectedLocation: null,
+  locationNote: '',
   referrerName: '',
 };
 
@@ -54,6 +57,11 @@ function ReservationApp() {
 
   function handleTimeSelect(time: string) {
     update({ selectedTime: time });
+    setStep('location');
+  }
+
+  function handleLocationSelect(location: Location | null, note: string) {
+    update({ selectedLocation: location, locationNote: note });
     setStep(isFirstVisit ? 'form' : 'confirm');
   }
 
@@ -89,6 +97,8 @@ function ReservationApp() {
         .insert({
           user_id: user.id,
           menu_id: menu.id,
+          location_id: state.selectedLocation?.id ?? null,
+          location_note: state.selectedLocation ? null : state.locationNote || null,
           date,
           time,
           referrer_name: state.referrerName || null,
@@ -104,6 +114,11 @@ function ReservationApp() {
           .eq('line_user_id', userId);
       }
 
+      const locationName = state.selectedLocation
+        ? state.selectedLocation.name
+        : state.locationNote || 'その他';
+      const locationAddress = state.selectedLocation?.address;
+
       // LINE通知（失敗しても予約は成功扱い）
       fetch('/api/notify', {
         method: 'POST',
@@ -115,6 +130,8 @@ function ReservationApp() {
           date,
           time,
           reservationId: reservation.id,
+          locationName,
+          locationAddress,
         }),
       }).catch(console.error);
 
@@ -127,7 +144,7 @@ function ReservationApp() {
     } });
   }
 
-  const backFromConfirm = () => setStep(isFirstVisit ? 'form' : 'time');
+  const backFromConfirm = () => setStep(isFirstVisit ? 'form' : 'location');
 
   return (
     <div className="app">
@@ -155,6 +172,12 @@ function ReservationApp() {
             onBack={() => setStep('calendar')}
           />
         )}
+        {step === 'location' && (
+          <LocationPicker
+            onSelect={handleLocationSelect}
+            onBack={() => setStep('time')}
+          />
+        )}
         {step === 'form' && (
           <ReservationForm
             state={state}
@@ -163,7 +186,7 @@ function ReservationApp() {
             pictureUrl={pictureUrl}
             onChange={update}
             onNext={() => setStep('confirm')}
-            onBack={() => setStep('time')}
+            onBack={() => setStep('location')}
           />
         )}
         {step === 'confirm' && (

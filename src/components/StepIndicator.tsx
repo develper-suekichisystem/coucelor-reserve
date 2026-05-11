@@ -4,13 +4,14 @@ const STEPS: { key: Step; label: string }[] = [
   { key: 'menu',     label: 'メニュー' },
   { key: 'calendar', label: '日付' },
   { key: 'time',     label: '時間' },
+  { key: 'location', label: '場所' },
   { key: 'form',     label: '入力' },
   { key: 'confirm',  label: '確認' },
   { key: 'complete', label: '完了' },
 ];
 
 const STEP_INDEX: Record<Step, number> = {
-  menu: 0, calendar: 1, time: 2, form: 3, confirm: 4, complete: 5,
+  menu: 0, calendar: 1, time: 2, location: 3, form: 4, confirm: 5, complete: 6,
 };
 
 interface Props {

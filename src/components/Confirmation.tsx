@@ -17,6 +17,12 @@ export function Confirmation({
     ? parseInt(state.selectedTime.slice(0, 2)) + 1
     : null;
 
+  const locationLabel = state.selectedLocation
+    ? state.selectedLocation.name
+    : state.locationNote || 'その他';
+
+  const locationSub = state.selectedLocation?.address;
+
   return (
     <div className="confirmation">
       <h2 className="section-title">予約内容の確認</h2>
@@ -34,6 +40,15 @@ export function Confirmation({
           <span className="confirm-value">
             {state.selectedDate?.replace(/-/g, '/')}&nbsp;
             {state.selectedTime}〜{endHour && `${String(endHour).padStart(2, '0')}:00`}
+          </span>
+        </div>
+        <div className="confirm-row confirm-row-location">
+          <span className="confirm-label">場所</span>
+          <span className="confirm-value">
+            <span className="confirm-location-name">{locationLabel}</span>
+            {locationSub && (
+              <span className="confirm-location-address">{locationSub}</span>
+            )}
           </span>
         </div>
         <div className="confirm-row">

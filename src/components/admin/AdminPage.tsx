@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { MenuAdmin } from './MenuAdmin';
 import { ScheduleAdmin } from './ScheduleAdmin';
+import { LocationAdmin } from './LocationAdmin';
 import { AdminLogin, isAdminAuthenticated } from './AdminLogin';
 import type { Reservation } from '../../types/index';
 
-type AdminTab = 'reservations' | 'menus' | 'schedule';
+type AdminTab = 'reservations' | 'menus' | 'schedule' | 'locations';
 
 function ReservationAdmin() {
   const today = new Date().toISOString().split('T')[0];
@@ -22,7 +23,7 @@ function ReservationAdmin() {
     setLoading(true);
     const { data } = await supabase
       .from('reservations')
-      .select('*, user:users(*), menu:menus(*)')
+      .select('*, user:users(*), menu:menus(*), location:locations(*)')
       .eq('date', selectedDate)
       .eq('status', 'confirmed')
       .order('time');
@@ -63,6 +64,12 @@ function ReservationAdmin() {
                   <span>{r.user?.phone}</span>
                   <span>{r.user?.email}</span>
                 </div>
+                {r.location && (
+                  <div className="admin-location">{r.location.name}（{r.location.address}）</div>
+                )}
+                {r.location_note && (
+                  <div className="admin-location">場所: {r.location_note}</div>
+                )}
                 {r.referrer_name && (
                   <div className="admin-referrer">紹介者: {r.referrer_name}</div>
                 )}
@@ -108,7 +115,13 @@ export function AdminPage() {
           className={`admin-tab${tab === 'schedule' ? ' active' : ''}`}
           onClick={() => setTab('schedule')}
         >
-          休日設定
+          受付設定
+        </button>
+        <button
+          className={`admin-tab${tab === 'locations' ? ' active' : ''}`}
+          onClick={() => setTab('locations')}
+        >
+          場所管理
         </button>
         <button
           className="admin-tab admin-tab-logout"
@@ -122,6 +135,7 @@ export function AdminPage() {
         {tab === 'reservations' && <ReservationAdmin />}
         {tab === 'menus' && <MenuAdmin />}
         {tab === 'schedule' && <ScheduleAdmin />}
+        {tab === 'locations' && <LocationAdmin />}
       </div>
     </div>
   );
