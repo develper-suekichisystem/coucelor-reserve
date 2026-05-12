@@ -8,6 +8,9 @@ export function LocationAdmin() {
   const [newAddress, setNewAddress] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editAddress, setEditAddress] = useState('');
 
   useEffect(() => { fetchLocations(); }, []);
 
@@ -33,6 +36,30 @@ export function LocationAdmin() {
     });
     setNewName('');
     setNewAddress('');
+    await fetchLocations();
+    setSaving(false);
+  }
+
+  function startEdit(loc: Location) {
+    setEditingId(loc.id);
+    setEditName(loc.name);
+    setEditAddress(loc.address);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditName('');
+    setEditAddress('');
+  }
+
+  async function saveEdit(id: string) {
+    if (!editName.trim() || !editAddress.trim()) return;
+    setSaving(true);
+    await supabase.from('locations').update({
+      name: editName.trim(),
+      address: editAddress.trim(),
+    }).eq('id', id);
+    cancelEdit();
     await fetchLocations();
     setSaving(false);
   }
@@ -86,22 +113,53 @@ export function LocationAdmin() {
           <ul className="location-list-admin">
             {locations.map(loc => (
               <li key={loc.id} className={`location-admin-item${loc.is_active ? '' : ' inactive'}`}>
-                <div className="location-admin-info">
-                  <span className="location-admin-name">{loc.name}</span>
-                  <span className="location-admin-address">{loc.address}</span>
-                </div>
-                <div className="location-admin-actions">
-                  <button
-                    className={`btn-toggle${loc.is_active ? ' active' : ''}`}
-                    onClick={() => toggleActive(loc)}
-                    title={loc.is_active ? '非表示にする' : '表示する'}
-                  >
-                    {loc.is_active ? '表示中' : '非表示'}
-                  </button>
-                  <button className="btn-remove" onClick={() => removeLocation(loc.id)}>
-                    削除
-                  </button>
-                </div>
+                {editingId === loc.id ? (
+                  <div className="location-edit-form">
+                    <input
+                      className="form-input"
+                      value={editName}
+                      onChange={e => setEditName(e.target.value)}
+                    />
+                    <input
+                      className="form-input"
+                      value={editAddress}
+                      onChange={e => setEditAddress(e.target.value)}
+                    />
+                    <div className="location-edit-actions">
+                      <button
+                        className="btn-save-small"
+                        onClick={() => saveEdit(loc.id)}
+                        disabled={!editName.trim() || !editAddress.trim() || saving}
+                      >
+                        保存
+                      </button>
+                      <button className="btn-cancel-small" onClick={cancelEdit}>
+                        キャンセル
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="location-admin-info">
+                      <span className="location-admin-name">{loc.name}</span>
+                      <span className="location-admin-address">{loc.address}</span>
+                    </div>
+                    <div className="location-admin-actions">
+                      <button className="btn-edit" onClick={() => startEdit(loc)}>
+                        編集
+                      </button>
+                      <button
+                        className={`btn-toggle${loc.is_active ? ' active' : ''}`}
+                        onClick={() => toggleActive(loc)}
+                      >
+                        {loc.is_active ? '表示中' : '非表示'}
+                      </button>
+                      <button className="btn-remove" onClick={() => removeLocation(loc.id)}>
+                        削除
+                      </button>
+                    </div>
+                  </>
+                )}
               </li>
             ))}
           </ul>

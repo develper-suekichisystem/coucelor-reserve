@@ -123,12 +123,6 @@ export function AdminPage() {
         >
           場所管理
         </button>
-        <button
-          className="admin-tab admin-tab-logout"
-          onClick={() => { sessionStorage.clear(); setAuthed(false); }}
-        >
-          ログアウト
-        </button>
       </div>
 
       <div className="admin-content">

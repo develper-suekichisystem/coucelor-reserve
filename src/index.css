@@ -684,6 +684,28 @@ textarea.form-input { resize: vertical; font-family: inherit; }
 }
 .btn-toggle:hover { background: var(--gray-100); }
 
+.btn-edit {
+  font-size: 12px; border-radius: 6px; padding: 3px 10px;
+  border: 1px solid var(--gray-300); background: none;
+  color: var(--gray-600); cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+.btn-edit:hover { background: var(--gray-100); }
+
+.location-edit-form { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.location-edit-form .form-input { width: 100%; }
+.location-edit-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.btn-save-small {
+  font-size: 12px; border-radius: 6px; padding: 4px 12px;
+  border: none; background: var(--primary); color: var(--white);
+  cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+.btn-save-small:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-cancel-small {
+  font-size: 12px; border-radius: 6px; padding: 4px 12px;
+  border: 1px solid var(--gray-300); background: none;
+  color: var(--gray-500); cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+
 /* ============================================================
    確認画面 — 場所行
    ============================================================ */

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//mnt/c/reservation-yuka-rinpa/src/components/**)"
+    ]
+  }
+}
