@@ -1,9 +1,9 @@
 /* カウンセリング予約サイト - カラースキーム */
 :root {
-  --primary: #663399;
-  --primary-light: #9966CC;
-  --primary-lighter: #CC99FF;
-  --primary-dark: #4C2666;
+  --primary: #a47dc8;
+  --primary-light: #c4a8e0;
+  --primary-lighter: #ddc8f0;
+  --primary-dark: #8060b0;
   
   --bg: #F5F0FA;
   --bg-secondary: #EBE0F5;
@@ -56,7 +56,7 @@ body {
   color: white;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(102, 51, 153, 0.2);
+  box-shadow: 0 4px 12px rgba(164, 125, 200, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,7 +155,7 @@ body {
   background: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(102, 51, 153, 0.1);
+  box-shadow: 0 2px 8px rgba(164, 125, 200, 0.1);
 }
 
 .menu-select h2 {
@@ -183,7 +183,7 @@ body {
   background: var(--primary-lighter);
   border-color: var(--primary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 51, 153, 0.15);
+  box-shadow: 0 4px 12px rgba(164, 125, 200, 0.15);
 }
 
 .menu-card:disabled {
@@ -222,7 +222,7 @@ body {
   background: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(102, 51, 153, 0.1);
+  box-shadow: 0 2px 8px rgba(164, 125, 200, 0.1);
 }
 
 .calendar-picker h2 {
@@ -322,7 +322,7 @@ body {
   background: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(102, 51, 153, 0.1);
+  box-shadow: 0 2px 8px rgba(164, 125, 200, 0.1);
 }
 
 .time-picker h2 {
@@ -373,7 +373,7 @@ body {
   background: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(102, 51, 153, 0.1);
+  box-shadow: 0 2px 8px rgba(164, 125, 200, 0.1);
 }
 
 .reservation-form h2 {
@@ -422,7 +422,7 @@ body {
   background: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(102, 51, 153, 0.1);
+  box-shadow: 0 2px 8px rgba(164, 125, 200, 0.1);
 }
 
 .confirmation h2 {
@@ -498,7 +498,7 @@ body {
 
 .confirm-button:hover:not(:disabled) {
   background: var(--primary-dark);
-  box-shadow: 0 4px 12px rgba(102, 51, 153, 0.3);
+  box-shadow: 0 4px 12px rgba(164, 125, 200, 0.3);
 }
 
 /* 完了画面 */
@@ -507,7 +507,7 @@ body {
   border-radius: 12px;
   padding: 40px 25px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(102, 51, 153, 0.1);
+  box-shadow: 0 2px 8px rgba(164, 125, 200, 0.1);
 }
 
 .complete-message h2 {
@@ -566,7 +566,7 @@ body {
 
 .new-reservation-button:hover {
   background: var(--primary-dark);
-  box-shadow: 0 4px 12px rgba(102, 51, 153, 0.3);
+  box-shadow: 0 4px 12px rgba(164, 125, 200, 0.3);
 }
 
 /* ローディング */
@@ -665,7 +665,7 @@ body {
   background: white;
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 2px 8px rgba(102, 51, 153, 0.1);
+  box-shadow: 0 2px 8px rgba(164, 125, 200, 0.1);
 }
 
 .admin-page h1 {

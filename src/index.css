@@ -2,9 +2,9 @@
    ゆか カウンセラー — パープルテーマ
    ============================================================ */
 :root {
-  --primary:       #663399;
-  --primary-light: #9966CC;
-  --primary-dark:  #4C2666;
+  --primary:       #a47dc8;
+  --primary-light: #c4a8e0;
+  --primary-dark:  #8060b0;
   --white:         #ffffff;
   --gray-50:       #f9fafb;
   --gray-100:      #f3f4f6;
@@ -171,7 +171,7 @@ body {
 .crystal-vessel-svg {
   width: 100px; height: auto;
   animation: float 2s ease-in-out infinite alternate;
-  filter: drop-shadow(0 4px 12px rgba(102,51,153,0.4));
+  filter: drop-shadow(0 4px 12px rgba(164,125,200,0.4));
 }
 @keyframes float {
   0%   { transform: translateY(0px); }
@@ -210,7 +210,7 @@ body {
 }
 .menu-card:hover, .menu-card:active {
   border-color: var(--primary);
-  box-shadow: 0 3px 10px rgba(102,51,153,0.18);
+  box-shadow: 0 3px 10px rgba(164,125,200,0.18);
   transform: translateY(-1px);
 }
 .menu-name  { font-size: 15px; font-weight: 600; color: var(--gray-800); margin-bottom: 6px; }
@@ -234,7 +234,7 @@ body {
   background: none; border: 1px solid var(--gray-200); border-radius: 8px;
   padding: 6px 12px; cursor: pointer; color: var(--primary); font-size: 13px;
 }
-.nav-btn:hover { border-color: var(--primary); background: rgba(102,51,153,0.06); }
+.nav-btn:hover { border-color: var(--primary); background: rgba(164,125,200,0.06); }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
 .calendar-dow {
   text-align: center; font-size: 12px; font-weight: 600;
@@ -285,12 +285,12 @@ body {
   width: 100%; outline: none; transition: border-color 0.15s;
   font-family: inherit;
 }
-.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(102,51,153,0.1); }
+.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(164,125,200,0.1); }
 .form-input.error  { border-color: var(--error); }
 .error-msg { font-size: 12px; color: var(--error); }
 .form-note {
   font-size: 12px; color: var(--primary-dark);
-  background: rgba(102,51,153,0.07); padding: 8px 12px;
+  background: rgba(164,125,200,0.07); padding: 8px 12px;
   border-radius: 6px; border-left: 3px solid var(--primary);
 }
 
@@ -320,7 +320,7 @@ body {
 .complete-message { font-size: 14px; color: var(--gray-600); line-height: 1.8; }
 .complete-id {
   font-size: 13px; color: var(--primary-dark);
-  background: rgba(102,51,153,0.08); padding: 8px 20px;
+  background: rgba(164,125,200,0.08); padding: 8px 20px;
   border-radius: 20px; font-weight: 600;
 }
 .complete-note { font-size: 13px; color: var(--gray-400); line-height: 1.7; }
@@ -431,7 +431,7 @@ body {
   border: 1px solid var(--gray-200); background: var(--gray-100);
   color: var(--gray-400); cursor: pointer; font-family: inherit;
 }
-.btn-toggle.active { border-color: var(--primary); background: rgba(102,51,153,0.1); color: var(--primary-dark); }
+.btn-toggle.active { border-color: var(--primary); background: rgba(164,125,200,0.1); color: var(--primary-dark); }
 .btn-edit {
   font-size: 12px; border-radius: 6px; padding: 4px 10px;
   border: 1px solid var(--gray-200); background: none;
@@ -489,7 +489,7 @@ textarea.form-input { resize: vertical; font-family: inherit; }
    ============================================================ */
 .line-profile-card {
   display: flex; align-items: center; gap: 14px;
-  padding: 16px; background: rgba(102,51,153,0.06);
+  padding: 16px; background: rgba(164,125,200,0.06);
   border: 1px solid var(--primary-light); border-radius: 12px;
   margin-bottom: 8px;
 }

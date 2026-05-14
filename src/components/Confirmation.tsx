@@ -13,8 +13,10 @@ interface Props {
 export function Confirmation({
   state, displayName, pictureUrl, isFirstVisit, onConfirm, onBack, submitting,
 }: Props) {
+  const customerMinutes = state.selectedMenu?.customer_duration_minutes ?? state.selectedMenu?.duration_minutes ?? 60;
+  const customerHours = Math.ceil(customerMinutes / 60);
   const endHour = state.selectedTime
-    ? parseInt(state.selectedTime.slice(0, 2)) + 1
+    ? parseInt(state.selectedTime.slice(0, 2)) + customerHours
     : null;
 
   const locationLabel = state.selectedLocation

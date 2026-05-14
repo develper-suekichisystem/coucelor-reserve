@@ -83,14 +83,32 @@ function ReservationApp() {
         .single();
       if (ue || !user) throw new Error('ユーザー登録に失敗しました');
 
-      const { data: existing } = await supabase
+      const providerMinutes = menu.provider_duration_minutes ?? menu.duration_minutes;
+      const slotsNeeded = Math.ceil(providerMinutes / 60);
+      const startHour = parseInt(time.slice(0, 2));
+      const neededTimes = new Set(
+        Array.from({ length: slotsNeeded }, (_, i) =>
+          `${String(startHour + i).padStart(2, '0')}:00`
+        )
+      );
+
+      const { data: existingReservations } = await supabase
         .from('reservations')
-        .select('id')
-        .eq('date', state.selectedDate)
-        .eq('time', state.selectedTime)
-        .eq('status', 'confirmed')
-        .maybeSingle();
-      if (existing) throw new Error('この時間はすでに予約されています。別の時間をお選びください。');
+        .select('time, menus(provider_duration_minutes, duration_minutes)')
+        .eq('date', date)
+        .eq('status', 'confirmed');
+
+      const hasConflict = existingReservations?.some((r: any) => {
+        const rStartH = parseInt((r.time as string).slice(0, 2));
+        const rMenu = r.menus;
+        const rDuration = rMenu?.provider_duration_minutes ?? rMenu?.duration_minutes ?? 60;
+        const rSlots = Math.ceil(rDuration / 60);
+        for (let i = 0; i < rSlots; i++) {
+          if (neededTimes.has(`${String(rStartH + i).padStart(2, '0')}:00`)) return true;
+        }
+        return false;
+      }) ?? false;
+      if (hasConflict) throw new Error('この時間はすでに予約されています。別の時間をお選びください。');
 
       const { data: reservation, error: re } = await supabase
         .from('reservations')
@@ -150,7 +168,7 @@ function ReservationApp() {
     <div className="app">
       <header className="app-header">
         <h1 className="app-title">カウンセリング予約</h1>
-        <p className="app-subtitle">ゆかカウンセラー</p>
+        <p className="app-subtitle">カウンセラー yuka</p>
       </header>
 
       {step !== 'complete' && <StepIndicator currentStep={step} />}
@@ -165,9 +183,10 @@ function ReservationApp() {
             onBack={() => setStep('menu')}
           />
         )}
-        {step === 'time' && state.selectedDate && (
+        {step === 'time' && state.selectedDate && state.selectedMenu && (
           <TimePicker
             date={state.selectedDate}
+            selectedMenu={state.selectedMenu}
             onSelect={handleTimeSelect}
             onBack={() => setStep('calendar')}
           />
