@@ -26,7 +26,8 @@ export function TimePicker({ date, selectedMenu, onSelect, onBack }: Props) {
         supabase
           .from('available_slots')
           .select('time')
-          .eq('date', date),
+          .eq('date', date)
+          .order('time'),
         supabase
           .from('reservations')
           .select('time, menus(provider_duration_minutes, duration_minutes)')
