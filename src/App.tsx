@@ -147,6 +147,7 @@ function ReservationApp() {
           menuName: menu.name,
           date,
           time,
+          customerDurationMinutes: menu.customer_duration_minutes ?? menu.duration_minutes,
           reservationId: reservation.id,
           locationName,
           locationAddress,
