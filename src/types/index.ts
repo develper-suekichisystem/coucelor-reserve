@@ -1,5 +1,8 @@
+export type ServiceType = 'rinpa' | 'counselor';
+
 export interface Menu {
   id: string;
+  service_type?: ServiceType;
   name: string;
   price: number;
   duration_minutes: number;
